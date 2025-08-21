@@ -71,7 +71,7 @@ export default function VEDAContentEditor({
 
   return (
     <Providers datasets={allAvailableDatasets} vedaConfig={vedaConfig}>
-      <div className={`border rounded-lg bg-white shadow-lg h-[600px] overflow-hidden ${className || ''}`}>
+      <div className={`w-full border rounded-lg bg-white shadow-lg h-[600px] overflow-hidden ${className || ''}`}>
         <Suspense
           fallback={
             <div className="h-full flex items-center justify-center">

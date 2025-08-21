@@ -109,7 +109,7 @@ export function MDXEditorEnhanced({ markdown, onChange, previewMDAST }: any) {
   };
 
   return (
-    <div className="h-[600px] border rounded-lg overflow-hidden">
+    <div className="w-full h-[600px] border rounded-lg overflow-hidden">
       <MDXEditor
         ref={editorRef}
         markdown={markdown}
@@ -117,7 +117,7 @@ export function MDXEditorEnhanced({ markdown, onChange, previewMDAST }: any) {
           analyzeMdast();
           return onChange(e);
         }}
-        contentEditableClassName="prose prose-lg max-w-none min-h-[500px] outline-none px-4 py-2"
+        contentEditableClassName="prose prose-lg max-w-none w-full min-h-[500px] outline-none px-4 py-2"
         plugins={[
           // scrollytellingButtonPlugin(), // Temporarily disable custom plugin
           headingsPlugin(),
