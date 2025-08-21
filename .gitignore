@@ -1,3 +1,26 @@
 node_modules
 dist
 .DS_Store
+
+# Environment files (should not be in npm package)
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# IDE
+.vscode
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+Thumbs.db
+
+# Build files
+*.tgz
