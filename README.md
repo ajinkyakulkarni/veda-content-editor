@@ -1,139 +1,251 @@
-# @slesaad/veda-content-editor
+# VEDA Content Editor
 
-A content editor component for VEDA projects.
+A powerful MDX editor component for React applications, built specifically for NASA's VEDA (Visualization, Exploration, and Data Analysis) project. This editor provides rich-text editing capabilities with support for custom components like interactive maps and charts.
+
+## Features
+
+- 📝 **Rich MDX Editing**: Full-featured markdown and MDX editing with live preview
+- 🗺️ **Interactive Map Component**: Embed and configure maps with various datasets and layers
+- 📊 **Chart Component**: Create and customize data visualizations
+- 🎨 **WYSIWYG Interface**: User-friendly interface with toolbar controls
+- 📱 **Responsive Design**: Works seamlessly across different screen sizes
+- 🔍 **Source Mode**: View generated MDX source (read-only to prevent data loss)
+- 🎯 **Custom Components**: Support for NASA VEDA-specific components
 
 ## Installation
 
 ```bash
-npm install @slesaad/veda-content-editor
+npm install veda-content-editor
+```
+
+or
+
+```bash
+yarn add veda-content-editor
 ```
 
 ## Usage
 
+### Basic Setup
+
 ```jsx
-import { VEDAContentEditor } from '@slesaad/veda-content-editor';
-import '@slesaad/veda-content-editor/dist/styles.css';
+import { VEDAContentEditor } from 'veda-content-editor';
+import 'veda-content-editor/style.css';
 
 function App() {
   const handleChange = (content) => {
-    console.log('Content changed:', content);
+    console.log('Content updated:', content);
+  };
+
+  const vedaConfig = {
+    envMapboxToken: 'your-mapbox-token',
+    envApiStacEndpoint: 'your-stac-endpoint',
+    envApiRasterEndpoint: 'your-raster-endpoint',
   };
 
   return (
     <VEDAContentEditor
-      initialContent="# Hello World"
+      initialContent="# Welcome to VEDA Editor"
       onChange={handleChange}
-      allAvailableDatasets={[]} // Pass your datasets here
+      vedaConfig={vedaConfig}
     />
   );
 }
 ```
 
-## Important Notes
+### Full Example with All Props
 
-### Version 0.1.9 - WORKING BUILD (Confirmed Fix)
-This version successfully resolves both critical runtime errors that prevented v0.1.0-0.1.8 from working:
+```jsx
+import { VEDAContentEditor } from 'veda-content-editor';
+import 'veda-content-editor/style.css';
 
-**✅ BOTH ISSUES FIXED:**
-1. **Babel Runtime Error**: ELIMINATED - No more "Cannot read properties of undefined (reading 'prototype')"
-   - Babel helpers properly imported from `@babel/runtime` (verified in build output)
-   - No inline helper functions in the built files
-   
-2. **Module Import Error**: ELIMINATED - No more "acorn-jsx does not provide an export named 'default'"
-   - All dependencies properly externalized (not bundled)
-   - Build output only ~2.4k lines (vs 37k when dependencies were bundled)
-   
-**Technical Solution:**
-- Aggressive externalization using function-based external configuration
-- Only bundle source files from `src/` directory
-- All node_modules and bare imports marked as external
-- CommonJS plugin only processes source files, not dependencies
-- Result: Clean build with all dependencies as external imports
+function App() {
+  const initialContent = `
+# My Document
 
-**Verification:**
-- Build output shows clean imports: `import _objectSpread from '@babel/runtime/helpers/esm/objectSpread2'`
-- No bundled dependencies or inline babel helpers
-- Package ready for use in Vite and other modern build tools
+This is a **VEDA** content editor with support for:
 
-### Version 0.1.8 - Complete Build Fix (Partial Success)
-Made structural improvements but issues persisted due to incomplete externalization
+- Rich text formatting
+- Custom components
+- Interactive maps
+- Data visualizations
+  `;
 
-### Version 0.1.7 - Critical Build Fixes (Partial)
-Attempted fixes that were not fully successful - issues persisted due to improper dependency bundling
+  const datasets = [
+    {
+      id: 'dataset-1',
+      name: 'Sample Dataset',
+      layers: [
+        { id: 'layer-1', name: 'Layer 1' },
+        { id: 'layer-2', name: 'Layer 2' }
+      ]
+    }
+  ];
 
-### Version 0.1.6
-- Attempted to fix acorn-jsx issue but both errors persisted
-- Added missing dependencies but build configuration was still incorrect
+  const vedaConfig = {
+    envMapboxToken: process.env.REACT_APP_MAPBOX_TOKEN,
+    envApiStacEndpoint: process.env.REACT_APP_STAC_ENDPOINT,
+    envApiRasterEndpoint: process.env.REACT_APP_RASTER_ENDPOINT,
+  };
 
-### Version 0.1.5
-- Fixed babel class inheritance helpers issue (no more `__proto__` errors)
-- Configured proper ESM output with babel runtime
-- Removed dangerous eval() usage for security
-- Added @babel/runtime as dependency
-- All fixes from previous versions included
-
-### Version 0.1.4
-- Fixed CSS handling with PostCSS for better build system compatibility
-- Corrected import syntax in documentation (named export)
-- Added troubleshooting guide
-- All fixes from previous versions included
-
-### Version 0.1.3
-- Enhanced build output formatting with explicit non-minification settings
-- Improved code readability in bundled output
-- All fixes from 0.1.2 included
-
-### Version 0.1.2
-- Fixed build configuration issues from 0.1.0
-- Added proper babel transpilation for class inheritance
-- Improved React version compatibility (supports React 16.8+, 17, and 18)
-- Removed minification for easier debugging
-
-### Peer Dependencies
-This package requires:
-- React (>=16.8.0 || ^17.0.0 || ^18.0.0)
-- React DOM (>=16.8.0 || ^17.0.0 || ^18.0.0)
-
-Some sub-dependencies may have stricter React version requirements, but the package should work with React 16.8+ and above.
+  return (
+    <div style={{ width: '100%', height: '100vh' }}>
+      <VEDAContentEditor
+        initialContent={initialContent}
+        onChange={(content) => console.log(content)}
+        placeholder="Start typing..."
+        className="my-custom-class"
+        allAvailableDatasets={datasets}
+        vedaConfig={vedaConfig}
+      />
+    </div>
+  );
+}
+```
 
 ## Props
 
-- `initialContent` (string): Initial markdown content
-- `onChange` (function): Callback when content changes
-- `allAvailableDatasets` (array): Available datasets for the editor
-- `className` (string): Additional CSS classes
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `initialContent` | `string` | No | Initial MDX content to display in the editor |
+| `onChange` | `(content: string) => void` | No | Callback function triggered when content changes |
+| `placeholder` | `string` | No | Placeholder text when editor is empty |
+| `className` | `string` | No | Additional CSS classes for the editor container |
+| `allAvailableDatasets` | `Array<Dataset>` | No | Available datasets for map components |
+| `vedaConfig` | `VedaConfig` | Yes | Configuration object with API endpoints and tokens |
+
+### VedaConfig Object
+
+```typescript
+interface VedaConfig {
+  envMapboxToken: string;      // Mapbox API token for map rendering
+  envApiStacEndpoint: string;  // STAC API endpoint
+  envApiRasterEndpoint: string; // Raster API endpoint
+}
+```
+
+## Custom Components
+
+### Map Component
+
+The editor supports embedding interactive maps with the following features:
+- Dataset and layer selection
+- Zoom and center controls
+- Date/time selection for temporal data
+- Comparison mode for viewing changes over time
+- Attribution and captions
+
+### Chart Component
+
+Create data visualizations with:
+- Line charts
+- Time series data
+- Custom color schemes
+- Axis labels and formatting
+- Data highlighting
+
+## Toolbar Features
+
+- **Text Formatting**: Bold, italic, underline, strikethrough
+- **Headings**: H1-H6 support
+- **Lists**: Ordered and unordered lists
+- **Code**: Inline code and code blocks
+- **Links**: Create and edit hyperlinks
+- **Images**: Insert and manage images
+- **Tables**: Create and edit tables
+- **Custom Components**: Insert maps and charts via toolbar buttons
+- **Source Mode**: View generated MDX (read-only)
+
+## Environment Variables
+
+When using this package, ensure your application provides the following environment variables:
+
+```env
+VITE_MAPBOX_TOKEN=your-mapbox-token
+VITE_API_STAC_ENDPOINT=your-stac-endpoint
+VITE_API_RASTER_ENDPOINT=your-raster-endpoint
+```
+
+Or pass them directly through the `vedaConfig` prop.
+
+## Styling
+
+The editor comes with default styles. Import the CSS file:
+
+```jsx
+import 'veda-content-editor/style.css';
+```
+
+### Full Width Layout
+
+To make the editor take full viewport width and height:
+
+```jsx
+<div style={{ width: '100%', height: '100vh' }}>
+  <VEDAContentEditor {...props} />
+</div>
+```
+
+## Known Issues
+
+- **Source Mode**: Currently read-only to prevent loss of custom components when editing raw MDX
+- **Custom Components**: Must be inserted using toolbar buttons; manual MDX editing of custom components is not supported
 
 ## Development
 
-To run the development server:
+### Building from Source
 
 ```bash
+# Clone the repository
+git clone https://github.com/ajinkyakulkarni/veda-content-editor.git
+cd veda-content-editor
+
+# Install dependencies
 npm install
-npm start
+
+# Build the package
+npm run build:lib
+
+# Run in development mode
+npm run dev
 ```
 
-To build the library:
+### Testing Locally
+
+To test the package locally in another project:
 
 ```bash
-npm run build:lib
+# In the veda-content-editor directory
+npm link
+
+# In your test project
+npm link veda-content-editor
 ```
 
-## Troubleshooting
+## Recent Updates
 
-### CSS Import Issues
-Make sure to import the styles in your application:
-```jsx
-import '@slesaad/veda-content-editor/dist/styles.css';
-```
+### Version 0.1.18
+- Fixed environment variable loading issues
+- Resolved duplicate context provider problems
+- Simplified UI by removing unnecessary tabs
+- Fixed input styling issues (black textbox problem)
+- Fixed React hooks errors when collapsing editors
+- Made source view read-only to prevent component loss
+- Added full-width support
+- Improved overall stability and performance
 
-### Build System Compatibility
-If you're using Create React App, Vite, or Next.js, the package should work out of the box. For custom webpack configurations, you may need to ensure CSS imports from node_modules are properly handled.
+## Contributing
 
-### React Version Conflicts
-While the package supports React 16.8+, some sub-dependencies may have stricter requirements. If you encounter version conflicts, try:
-1. Using React 18 (recommended)
-2. Adding resolutions/overrides in your package.json
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
 MIT
+
+## Support
+
+For issues and questions, please [open an issue](https://github.com/ajinkyakulkarni/veda-content-editor/issues) on GitHub.
+
+## Credits
+
+Built for NASA's VEDA project by the development team.
