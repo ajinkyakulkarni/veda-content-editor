@@ -8,6 +8,15 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       plugins: [react()],
+      minify: false,  // Disable minification completely
+      terserOptions: {
+        compress: false,
+        mangle: false,
+        format: {
+          beautify: true,
+          comments: 'all'
+        }
+      },
       lib: {
         entry: resolve(__dirname, "src/lib/index.ts"),
         name: "VEDAContentEditor",
@@ -22,7 +31,8 @@ export default defineConfig(({ mode }) => {
           "focus-trap-react",
           "styled-components",
           /^@devseed-ui\/.*/,
-          /^@teamimpact\/.*/,
+          // Comment out to bundle @teamimpact/veda-ui unminified
+          // /^@teamimpact\/.*/,
         ],
         output: {
           exports: "named",
@@ -35,7 +45,7 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      sourcemap: true,
+      sourcemap: 'inline',  // Use inline sourcemaps for better debugging
     },
 resolve: {
   alias: {
